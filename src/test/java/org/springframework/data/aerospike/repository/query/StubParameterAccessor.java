@@ -5,8 +5,8 @@ package org.springframework.data.aerospike.repository.query;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Optional;
 
-import org.springframework.data.aerospike.core.AerospikeWriter;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Range;
 import org.springframework.data.domain.Sort;
@@ -86,8 +86,9 @@ public class StubParameterAccessor implements AerospikeParameterAccessor {
 	public Object[] getValues() {
 		return this.values;
 	}
+	
 	@Override
-	public Class<?> getDynamicProjection() {
+	public Optional<Class<?>> getDynamicProjection() {
 		// TODO Auto-generated method stub
 		return null;
 	}

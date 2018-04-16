@@ -514,7 +514,7 @@ public class AerospikeTemplate implements AerospikeOperations {
 		Qualifier qualifier = query.getCritieria().getCriteriaObject();
 		final Iterable<T> results = findAllUsingQuery(type, null, qualifier);
 		List<?> returnedList = IterableConverter.toList(results);
-		if(results!=null && query.getSort()!=null){
+		if(results!=null && query.getSort().isSorted()){
 			Comparator comparator = aerospikePropertyComparator(query);
 			Collections.sort(returnedList, comparator);
 		}
@@ -563,8 +563,7 @@ public class AerospikeTemplate implements AerospikeOperations {
 	 * int, int, org.springframework.data.domain.Sort, java.lang.Class)
 	 */
 	@Override
-	public <T> Iterable<T> findInRange(int offset, int rows, Sort sort,
-			Class<T> type) {
+	public <T> Iterable<T> findInRange(long offset, int rows, Sort sort, Class<T> type) {
 		Assert.notNull(type, "Type for count must not be null!");
 		final long rowCount = rows;
 		final AtomicLong count = new AtomicLong(0);

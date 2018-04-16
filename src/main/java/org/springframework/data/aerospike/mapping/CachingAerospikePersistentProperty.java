@@ -15,11 +15,9 @@
  *******************************************************************************/
 package org.springframework.data.aerospike.mapping;
 
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
-
 import org.springframework.data.mapping.PersistentEntity;
 import org.springframework.data.mapping.model.FieldNamingStrategy;
+import org.springframework.data.mapping.model.Property;
 import org.springframework.data.mapping.model.SimpleTypeHolder;
 
 /**
@@ -46,12 +44,11 @@ public class CachingAerospikePersistentProperty extends BasicAerospikePersistent
 	 * @param simpleTypeHolder
 	 * @param fieldNamingStrategy
 	 */
-	public CachingAerospikePersistentProperty(Field field,
-			PropertyDescriptor propertyDescriptor,
+	public CachingAerospikePersistentProperty(Property property,
 			PersistentEntity<?, AerospikePersistentProperty> owner,
 			SimpleTypeHolder simpleTypeHolder,
 			FieldNamingStrategy fieldNamingStrategy) {
-		super(field, propertyDescriptor, owner, simpleTypeHolder, fieldNamingStrategy);
+		super(property, owner, simpleTypeHolder, fieldNamingStrategy);
 	}
 
 	@Override

@@ -13,6 +13,7 @@ import org.springframework.util.Assert;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 
 public class SimpleAerospikeRepository<T, ID extends Serializable> implements AerospikeRepository<T, ID> {
 
@@ -29,6 +30,7 @@ public class SimpleAerospikeRepository<T, ID extends Serializable> implements Ae
 	 * (non-Javadoc)
 	 * @see org.springframework.data.repository.CrudRepository#findOne(java.io.Serializable)
 	 */
+	@Deprecated
 	@Override
 	public T findOne(ID id) {
 		return operations.findById(id, entityInformation.getJavaType());
@@ -42,6 +44,7 @@ public class SimpleAerospikeRepository<T, ID extends Serializable> implements Ae
 		return entity;
 	}
 
+	@Override
 	public <S extends T> List<S> save(Iterable<S> entities) {
 		Assert.notNull(entities, "The given Iterable of entities not be null!");
 
@@ -74,7 +77,7 @@ public class SimpleAerospikeRepository<T, ID extends Serializable> implements Ae
 	@Override
 	public Page<T> findAll(Pageable pageable) {
 
-		if (pageable == null) {
+		if (pageable.isUnpaged()) {
 			List<T> result = findAll();
 			return new PageImpl<T>(result, null, result.size());
 		}
@@ -88,9 +91,10 @@ public class SimpleAerospikeRepository<T, ID extends Serializable> implements Ae
 	/* (non-Javadoc)
 	 * @see org.springframework.data.repository.CrudRepository#exists(java.io.Serializable)
 	 */
+	@Deprecated
 	@Override
 	public boolean exists(ID id) {
-		return operations.exists(id, entityInformation.getJavaType());
+		return existsById(id);
 	}
 	/* (non-Javadoc)
 	 * @see org.springframework.data.repository.CrudRepository#findAll()
@@ -105,6 +109,7 @@ public class SimpleAerospikeRepository<T, ID extends Serializable> implements Ae
 	 * @see org.springframework.data.repository.CrudRepository#findAll(java.lang.Iterable)
 	 */
 	@SuppressWarnings("unchecked")
+	@Deprecated
 	@Override
 	public Iterable<T> findAll(Iterable<ID> ids) {
 		return operations.findByIDs((Iterable<Serializable>)ids, entityInformation.getJavaType());
@@ -121,22 +126,19 @@ public class SimpleAerospikeRepository<T, ID extends Serializable> implements Ae
 	/* (non-Javadoc)
 	 * @see org.springframework.data.repository.CrudRepository#delete(java.io.Serializable)
 	 */
+	@Deprecated
 	@Override
 	public void delete(ID id) {
-		Assert.notNull(id, "The given id must not be null!");
-		operations.delete(id, entityInformation.getJavaType());
-		
+		deleteById(id);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.springframework.data.repository.CrudRepository#delete(java.lang.Iterable)
 	 */
+	@Deprecated
 	@Override
 	public void delete(Iterable<? extends T> entities) {
-		for (T entity : entities) {
-			delete(entity);
-		}
-		
+		deleteAll(entities);
 	}
 
 	/* (non-Javadoc)
@@ -165,6 +167,37 @@ public class SimpleAerospikeRepository<T, ID extends Serializable> implements Ae
 	@Override
 	public boolean indexExists(String indexName) {
 		return operations.indexExists(indexName);
+	}
+	@Override
+	public <S extends T> Iterable<S> saveAll(Iterable<S> entities) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Optional<T> findById(ID id) {
+		return Optional.ofNullable(operations.findById(id, entityInformation.getJavaType()));
+	}
+	
+	@Override
+	public boolean existsById(ID id) {
+		return operations.exists(id, entityInformation.getJavaType());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Iterable<T> findAllById(Iterable<ID> ids) {
+		return operations.findByIDs((Iterable<Serializable>)ids, entityInformation.getJavaType());
+	}
+	@Override
+	public void deleteById(ID id) {
+		Assert.notNull(id, "The given id must not be null!");
+		operations.delete(id, entityInformation.getJavaType());
+	}
+	@Override
+	public void deleteAll(Iterable<? extends T> entities) {
+		for (T entity : entities) {
+			delete(entity);
+		}
 	}
 
 }

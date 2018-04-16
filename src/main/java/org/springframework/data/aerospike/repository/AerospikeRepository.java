@@ -21,6 +21,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.Repository;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Aerospike specific {@link Repository}
@@ -39,12 +40,18 @@ public interface AerospikeRepository<T, ID extends Serializable> extends PagingA
 	 * @param binName
 	 * @param indexType
 	 */
-
 	@SuppressWarnings("hiding")
 	<T> void createIndex(Class<T> domainType, String indexName, String binName, IndexType indexType);
 
 	<T> void deleteIndex(Class<T> domainType, String indexName);
 
+	@Deprecated	public T findOne(ID id);
+	@Deprecated	public boolean exists(ID id);
+	@Deprecated	public Iterable<T> findAll(Iterable<ID> ids);
+	@Deprecated public void delete(ID id);
+	@Deprecated public void delete(Iterable<? extends T> entities);
+
+	public <S extends T> List<S> save(Iterable<S> entities);
 	boolean indexExists(String indexName);
 
 }

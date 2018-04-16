@@ -107,16 +107,6 @@ public class AerospikeExpirationTests extends BaseIntegrationTests {
     }
 
     @Test
-    public void shouldReturnExpirationValue() throws InterruptedException {
-        template.insert(new DocumentWithExpirationAnnotation(id, 5));
-
-        Thread.sleep(1500L);
-
-        DocumentWithExpirationAnnotation document = template.findById(id, DocumentWithExpirationAnnotation.class);
-        assertThat(document.getExpiration()).isGreaterThan(0).isLessThan(5);
-    }
-
-    @Test
     public void shouldUpdateExpirationOnTouchOnRead() throws InterruptedException {
         String id = nextId();
         template.insert(new DocumentWithExpirationOneDay(id));

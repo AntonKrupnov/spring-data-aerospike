@@ -1,25 +1,30 @@
 package org.springframework.data.aerospike.convert;
 
-import com.aerospike.client.Key;
+import static org.springframework.data.aerospike.convert.AerospikeMetaData.USER_KEY;
+import static org.springframework.data.aerospike.utility.TimeUtils.unixTimeToOffsetInSeconds;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.core.convert.support.GenericConversionService;
 import org.springframework.data.aerospike.mapping.AerospikeMappingContext;
 import org.springframework.data.aerospike.mapping.AerospikePersistentEntity;
 import org.springframework.data.aerospike.mapping.AerospikePersistentProperty;
 import org.springframework.data.convert.EntityWriter;
 import org.springframework.data.convert.TypeMapper;
+import org.springframework.data.mapping.MappingException;
 import org.springframework.data.mapping.PropertyHandler;
 import org.springframework.data.mapping.model.ConvertingPropertyAccessor;
-import org.springframework.data.mapping.model.MappingException;
 import org.springframework.data.util.ClassTypeInformation;
 import org.springframework.data.util.TypeInformation;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.springframework.data.aerospike.convert.AerospikeMetaData.USER_KEY;
-import static org.springframework.data.aerospike.utility.TimeUtils.unixTimeToOffsetInSeconds;
+import com.aerospike.client.Key;
 
 public class MappingAerospikeWriteConverter implements EntityWriter<Object, AerospikeWriteData> {
 

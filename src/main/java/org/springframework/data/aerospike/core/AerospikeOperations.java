@@ -139,7 +139,7 @@ public interface AerospikeOperations {//extends KeyValueOperations {
 	 * @param type
 	 * @return
 	 */
-	<T> Iterable<T> findInRange(int offset, int rows, Sort sort, Class<T> type);
+	<T> Iterable<T> findInRange(long offset, int rows, Sort sort, Class<T> type);
 
 	/**
 	 * @param type

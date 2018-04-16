@@ -77,8 +77,97 @@ public class AerospikeKeyValueAdapter extends AbstractKeyValueAdapter {
 	 * (non-Javadoc)
 	 * @see org.springframework.data.keyvalue.core.KeyValueAdapter#put(java.io.Serializable, java.lang.Object, java.io.Serializable)
 	 */
-	@Override
+	@Deprecated
 	public Object put(Serializable id, Object item, Serializable keyspace) {
+		return put((Object)id, item, keyspace.toString());
+	}
+
+	/* 
+	 * (non-Javadoc)
+	 * @see org.springframework.data.keyvalue.core.KeyValueAdapter#contains(java.io.Serializable, java.io.Serializable)
+	 */
+	@Deprecated
+	public boolean contains(Serializable id, Serializable keyspace) {
+		return contains((Object) id, keyspace.toString());
+	}
+
+	/* 
+	 * (non-Javadoc)
+	 * @see org.springframework.data.keyvalue.core.KeyValueAdapter#get(java.io.Serializable, java.io.Serializable)
+	 */
+	@Deprecated
+	public Object get(Serializable id, Serializable keyspace) {
+		return get((Object)id, keyspace.toString());
+	}
+
+	/* 
+	 * (non-Javadoc)
+	 * @see org.springframework.data.keyvalue.core.KeyValueAdapter#delete(java.io.Serializable, java.io.Serializable)
+	 */
+	@Deprecated
+	public Object delete(Serializable id, Serializable keyspace) {
+		return delete((Object)id, keyspace.toString());
+	}
+
+	/* 
+	 * (non-Javadoc)
+	 * @see org.springframework.data.keyvalue.core.KeyValueAdapter#getAllOf(java.io.Serializable)
+	 */
+	@Deprecated
+	public Collection<?> getAllOf(Serializable keyspace) {
+		return  new ArrayList<Object>();
+	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * @see org.springframework.data.keyvalue.core.KeyValueAdapter#deleteAllOf(java.io.Serializable)
+	 */
+	@Deprecated
+	public void deleteAllOf(Serializable keyspace) {
+		//"set-config:context=namespace;id=namespace_name;set=set_name;set-delete=true;"
+		Utils.infoAll(client, "set-config:context=namespace;id=" + this.namespace + ";set=" + keyspace.toString() + ";set-delete=true;");
+	}
+
+	/* 
+	 * (non-Javadoc)
+	 * @see org.springframework.data.keyvalue.core.KeyValueAdapter#clear()
+	 */
+	@Override
+	public void clear() {}
+
+	/* 
+	 * (non-Javadoc)
+	 * @see org.springframework.beans.factory.DisposableBean#destroy()
+	 */
+	@Override
+	public void destroy() throws Exception {}
+	
+	private Key makeKey(String set, Object keyValue){
+		return new Key(this.namespace, set, Value.get(keyValue));
+	}
+	
+	@Deprecated
+	public Collection<?> find(KeyValueQuery<?> query, Serializable keyspace) {
+		// TODO Auto-generated method stub
+		return super.find(query, keyspace.toString());
+	}
+
+	@Deprecated
+	public CloseableIterator<Entry<Serializable, Object>> entries(
+			Serializable keyspace) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Deprecated
+	public long count(Serializable keyspace) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	@Override
+	public Object put(Object id, Object item, String keyspace) {
 		AerospikeWriteData data = AerospikeWriteData.forWrite();
 
 		converter.write(item, data);
@@ -86,25 +175,18 @@ public class AerospikeKeyValueAdapter extends AbstractKeyValueAdapter {
 		client.put(null, data.getKey(), data.getBinsAsArray());
 
 		return item;
+
 	}
 
-	/* 
-	 * (non-Javadoc)
-	 * @see org.springframework.data.keyvalue.core.KeyValueAdapter#contains(java.io.Serializable, java.io.Serializable)
-	 */
-	@Override
-	public boolean contains(Serializable id, Serializable keyspace) {
 
-		return client.exists(null, makeKey(keyspace.toString(), id.toString()));
+	@Override
+	public boolean contains(Object id, String keyspace) {
+		return client.exists(null, makeKey(keyspace, id.toString()));
 	}
 
-	/* 
-	 * (non-Javadoc)
-	 * @see org.springframework.data.keyvalue.core.KeyValueAdapter#get(java.io.Serializable, java.io.Serializable)
-	 */
-	@Override
-	public Object get(Serializable id, Serializable keyspace) {
 
+	@Override
+	public Object get(Object id, String keyspace) {
 		Key key = makeKey(keyspace.toString(), id.toString());
 		Record record = client.get(null, key);
 		if(record == null){
@@ -114,13 +196,9 @@ public class AerospikeKeyValueAdapter extends AbstractKeyValueAdapter {
 		return converter.read(Object.class,  data);
 	}
 
-	/* 
-	 * (non-Javadoc)
-	 * @see org.springframework.data.keyvalue.core.KeyValueAdapter#delete(java.io.Serializable, java.io.Serializable)
-	 */
-	@Override
-	public Object delete(Serializable id, Serializable keyspace) {
 
+	@Override
+	public Object delete(Object id, String keyspace) {
 		Key key = new Key(namespace, keyspace.toString(), id.toString());
 
 		Object object = get(id, keyspace);
@@ -134,12 +212,9 @@ public class AerospikeKeyValueAdapter extends AbstractKeyValueAdapter {
 		return object;
 	}
 
-	/* 
-	 * (non-Javadoc)
-	 * @see org.springframework.data.keyvalue.core.KeyValueAdapter#getAllOf(java.io.Serializable)
-	 */
+
 	@Override
-	public Collection<?> getAllOf(Serializable keyspace) {
+	public Iterable<?> getAllOf(String keyspace) {
 		
 		Statement statement = new Statement();
 		statement.setNamespace(namespace);
@@ -169,49 +244,22 @@ public class AerospikeKeyValueAdapter extends AbstractKeyValueAdapter {
 		return result;
 	}
 
-	/* 
-	 * (non-Javadoc)
-	 * @see org.springframework.data.keyvalue.core.KeyValueAdapter#deleteAllOf(java.io.Serializable)
-	 */
-	@Override
-	public void deleteAllOf(Serializable keyspace) {
-		//"set-config:context=namespace;id=namespace_name;set=set_name;set-delete=true;"
-		Utils.infoAll(client, "set-config:context=namespace;id=" + this.namespace + ";set=" + keyspace.toString() + ";set-delete=true;");
-	}
-
-	/* 
-	 * (non-Javadoc)
-	 * @see org.springframework.data.keyvalue.core.KeyValueAdapter#clear()
-	 */
-	@Override
-	public void clear() {}
-
-	/* 
-	 * (non-Javadoc)
-	 * @see org.springframework.beans.factory.DisposableBean#destroy()
-	 */
-	@Override
-	public void destroy() throws Exception {}
-	
-	private Key makeKey(String set, Object keyValue){
-		return new Key(this.namespace, set, Value.get(keyValue));
-	}
-	
-	@Override
-	public Collection<?> find(KeyValueQuery<?> query, Serializable keyspace) {
-		// TODO Auto-generated method stub
-		return super.find(query, keyspace);
-	}
 
 	@Override
-	public CloseableIterator<Entry<Serializable, Object>> entries(
-			Serializable keyspace) {
+	public CloseableIterator<Entry<Object, Object>> entries(String keyspace) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+
 	@Override
-	public long count(Serializable keyspace) {
+	public void deleteAllOf(String keyspace) {
+		Utils.infoAll(client, "set-config:context=namespace;id=" + this.namespace + ";set=" + keyspace + ";set-delete=true;");
+	}
+
+
+	@Override
+	public long count(String keyspace) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
