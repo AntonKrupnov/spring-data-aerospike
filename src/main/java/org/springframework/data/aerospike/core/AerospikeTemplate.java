@@ -599,7 +599,7 @@ public class AerospikeTemplate implements AerospikeOperations {
 	 * int, int, org.springframework.data.domain.Sort, java.lang.Class)
 	 */
 	@Override
-	public <T> Iterable<T> findInRange(int offset, int rows, Sort sort,
+	public <T> Iterable<T> findInRange(long offset, int rows, Sort sort,
 			Class<T> type) {
 		Assert.notNull(type, "Type for count must not be null!");
 		final long rowCount = rows;
@@ -964,7 +964,7 @@ public class AerospikeTemplate implements AerospikeOperations {
 	}
 
 	private WritePolicy getCasAwareWritePolicy(AerospikeWriteData data, AerospikePersistentEntity<?> entity,
-											   ConvertingPropertyAccessor accessor) {
+											   ConvertingPropertyAccessor<?> accessor) {
 		WritePolicyBuilder builder = WritePolicyBuilder.builder(this.client.writePolicyDefault)
 				.sendKey(true)
 				.generationPolicy(GenerationPolicy.EXPECT_GEN_EQUAL)

@@ -13,6 +13,7 @@ import org.springframework.util.Assert;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 
 public class SimpleAerospikeRepository<T, ID extends Serializable> implements AerospikeRepository<T, ID> {
 
@@ -30,8 +31,8 @@ public class SimpleAerospikeRepository<T, ID extends Serializable> implements Ae
 	 * @see org.springframework.data.repository.CrudRepository#findOne(java.io.Serializable)
 	 */
 	@Override
-	public T findOne(ID id) {
-		return operations.findById(id, entityInformation.getJavaType());
+	public Optional<T> findById(ID id) {
+		return Optional.ofNullable(operations.findById(id, entityInformation.getJavaType()));
 	}
 
 	@Override
@@ -42,7 +43,7 @@ public class SimpleAerospikeRepository<T, ID extends Serializable> implements Ae
 		return entity;
 	}
 
-	public <S extends T> List<S> save(Iterable<S> entities) {
+	public <S extends T> List<S> saveAll(Iterable<S> entities) {
 		Assert.notNull(entities, "The given Iterable of entities not be null!");
 
 		List<S> result = IterableConverter.toList(entities);
@@ -89,7 +90,7 @@ public class SimpleAerospikeRepository<T, ID extends Serializable> implements Ae
 	 * @see org.springframework.data.repository.CrudRepository#exists(java.io.Serializable)
 	 */
 	@Override
-	public boolean exists(ID id) {
+	public boolean existsById(ID id) {
 		return operations.exists(id, entityInformation.getJavaType());
 	}
 	/* (non-Javadoc)
@@ -106,7 +107,7 @@ public class SimpleAerospikeRepository<T, ID extends Serializable> implements Ae
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public Iterable<T> findAll(Iterable<ID> ids) {
+	public Iterable<T> findAllById(Iterable<ID> ids) {
 		return operations.findByIds(ids, entityInformation.getJavaType());
 	}
 
@@ -122,7 +123,7 @@ public class SimpleAerospikeRepository<T, ID extends Serializable> implements Ae
 	 * @see org.springframework.data.repository.CrudRepository#delete(java.io.Serializable)
 	 */
 	@Override
-	public void delete(ID id) {
+	public void deleteById(ID id) {
 		Assert.notNull(id, "The given id must not be null!");
 		operations.delete(id, entityInformation.getJavaType());
 		
@@ -132,7 +133,7 @@ public class SimpleAerospikeRepository<T, ID extends Serializable> implements Ae
 	 * @see org.springframework.data.repository.CrudRepository#delete(java.lang.Iterable)
 	 */
 	@Override
-	public void delete(Iterable<? extends T> entities) {
+	public void deleteAll(Iterable<? extends T> entities) {
 		for (T entity : entities) {
 			delete(entity);
 		}

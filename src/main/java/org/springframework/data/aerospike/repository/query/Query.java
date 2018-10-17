@@ -18,7 +18,7 @@ import org.springframework.data.keyvalue.core.query.KeyValueQuery;
 public class Query {
 
 	private Sort sort;
-	private int offset = -1;
+	private long offset = -1;
 	private int rows = -1;
 	private CriteriaDefinition criteria;
 
@@ -63,7 +63,7 @@ public class Query {
 	 * 
 	 * @return negative value if not set.
 	 */
-	public int getOffset() {
+	public long getOffset() {
 		return this.offset;
 	}
 
@@ -81,7 +81,7 @@ public class Query {
 	 * 
 	 * @param offset use negative value for none.
 	 */
-	public void setOffset(int offset) {
+	public void setOffset(long offset) {
 		this.offset = offset;
 	}
 
@@ -124,7 +124,7 @@ public class Query {
 	}
 
 	/**
-	 * @see Query#setOffset(int)
+	 * @see Query#setOffset(long)
 	 * @param offset
 	 * @return
 	 */

@@ -65,7 +65,7 @@ public class SimpleAerospikeRepositoryTest {
 	public void testFindOne() {
 		when(operations.findById("21", Person.class)).thenReturn(testPerson);
 
-		Person person = aerospikeRepository.findOne("21");
+		Person person = aerospikeRepository.findById("21").get();
 
 		assertThat(person.getFirstName()).isEqualTo("Jean");
 	}
@@ -80,7 +80,7 @@ public class SimpleAerospikeRepositoryTest {
 
 	@Test
 	public void testSaveIterableOfS() {
-		List<Person> result = aerospikeRepository.save(testPersons);
+		List<Person> result = aerospikeRepository.saveAll(testPersons);
 
 		assertThat(result).isEqualTo(testPersons);
 		verify(operations, times(testPersons.size())).save(any());
@@ -119,7 +119,7 @@ public class SimpleAerospikeRepositoryTest {
 	public void testExists() {
 		when(operations.exists(testPerson.getId(), Person.class)).thenReturn(true);
 
-		boolean exists = aerospikeRepository.exists(testPerson.getId());
+		boolean exists = aerospikeRepository.existsById(testPerson.getId());
 		assertThat(exists).isTrue();
 	}
 
@@ -135,23 +135,23 @@ public class SimpleAerospikeRepositoryTest {
 	@Test
 	public void testFindAllIterableOfID() {
 		List<String> ids = testPersons.stream().map(Person::getId).collect(toList());
-		when(aerospikeRepository.findAll(ids)).thenReturn(testPersons);
+		when(aerospikeRepository.findAllById(ids)).thenReturn(testPersons);
 
-		List<Person> fetchList = (List<Person>) aerospikeRepository.findAll(ids);
+		List<Person> fetchList = (List<Person>) aerospikeRepository.findAllById(ids);
 
 		assertThat(fetchList).isEqualTo(testPersons);
 	}
 
 	@Test
 	public void testDeleteID() {
-		aerospikeRepository.delete("one");
+		aerospikeRepository.deleteById("one");
 
 		verify(operations).delete("one", Person.class);
 	}
 
 	@Test
 	public void testDeleteIterableOfQextendsT() {
-		aerospikeRepository.delete(testPersons);
+		aerospikeRepository.deleteAll(testPersons);
 
 		verify(operations, times(testPersons.size())).delete(any(Person.class));
 	}

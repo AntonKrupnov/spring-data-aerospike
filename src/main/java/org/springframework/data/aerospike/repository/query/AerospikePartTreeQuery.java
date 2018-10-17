@@ -10,10 +10,10 @@ import org.springframework.data.aerospike.core.AerospikeOperations;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.keyvalue.core.IterableConverter;
-import org.springframework.data.repository.query.EvaluationContextProvider;
 import org.springframework.data.repository.query.ParameterAccessor;
 import org.springframework.data.repository.query.ParametersParameterAccessor;
 import org.springframework.data.repository.query.QueryMethod;
+import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
 import org.springframework.data.repository.query.RepositoryQuery;
 import org.springframework.data.repository.query.parser.AbstractQueryCreator;
 import org.springframework.data.repository.query.parser.PartTree;
@@ -30,14 +30,14 @@ import org.springframework.util.ClassUtils;
  */
 public class AerospikePartTreeQuery implements RepositoryQuery {
 	
-	private final EvaluationContextProvider evaluationContextProvider;
+	private final QueryMethodEvaluationContextProvider evaluationContextProvider;
 	private final QueryMethod queryMethod;
 	private final AerospikeOperations aerospikeOperations;
 	private final Class<? extends AbstractQueryCreator<?, ?>> queryCreator;
 
 	private Query query;
 
-	public AerospikePartTreeQuery(QueryMethod queryMethod, EvaluationContextProvider evalContextProvider,
+	public AerospikePartTreeQuery(QueryMethod queryMethod, QueryMethodEvaluationContextProvider evalContextProvider,
 			AerospikeOperations aerospikeOperations, Class<? extends AbstractQueryCreator<?, ?>> queryCreator) {
 
 		this.queryMethod = queryMethod;

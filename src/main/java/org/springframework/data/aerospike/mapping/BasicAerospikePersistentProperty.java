@@ -20,13 +20,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.aerospike.annotation.Expiration;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mapping.Association;
+import org.springframework.data.mapping.MappingException;
 import org.springframework.data.mapping.PersistentEntity;
 import org.springframework.data.mapping.model.*;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -51,11 +50,10 @@ public class BasicAerospikePersistentProperty extends AnnotationBasedPersistentP
 
 	private final FieldNamingStrategy fieldNamingStrategy;
 
-	public BasicAerospikePersistentProperty(Field field,
-											PropertyDescriptor propertyDescriptor,
+	public BasicAerospikePersistentProperty(Property property,
 											PersistentEntity<?, AerospikePersistentProperty> owner,
 											SimpleTypeHolder simpleTypeHolder, FieldNamingStrategy fieldNamingStrategy) {
-		super(field, propertyDescriptor, owner, simpleTypeHolder);
+		super(property, owner, simpleTypeHolder);
 
 		this.fieldNamingStrategy = fieldNamingStrategy == null ? PropertyNameFieldNamingStrategy.INSTANCE
 				: fieldNamingStrategy;

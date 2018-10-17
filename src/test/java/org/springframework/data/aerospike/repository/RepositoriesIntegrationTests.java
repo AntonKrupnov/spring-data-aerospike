@@ -16,7 +16,7 @@ public class RepositoriesIntegrationTests extends BaseIntegrationTests {
 
     @Test
     public void findOne_shouldReturnNullForNonExistingKey() throws Exception {
-        CompositeObject one = repository.findOne("non-existing-id");
+        CompositeObject one = repository.findById("non-existing-id").get();
 
         assertThat(one).isNull();
     }
@@ -30,7 +30,7 @@ public class RepositoriesIntegrationTests extends BaseIntegrationTests {
                 .build();
         repository.save(expected);
 
-        CompositeObject actual = repository.findOne(expected.getId());
+        CompositeObject actual = repository.findById(expected.getId()).get();
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -42,10 +42,10 @@ public class RepositoriesIntegrationTests extends BaseIntegrationTests {
                 .id(id)
                 .build();
         repository.save(expected);
-        assertThat(repository.findOne(id)).isNotNull();
+        assertThat(repository.findById(id)).isNotNull();
 
         repository.delete(expected);
 
-        assertThat(repository.findOne(id)).isNull();
+        assertThat(repository.findById(id)).isNull();
     }
 }

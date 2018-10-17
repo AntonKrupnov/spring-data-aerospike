@@ -1,6 +1,7 @@
 package org.springframework.data.aerospike.convert;
 
 import org.springframework.data.convert.TypeAliasAccessor;
+import org.springframework.data.mapping.Alias;
 
 import java.util.Map;
 
@@ -18,11 +19,11 @@ public class AerospikeTypeAliasAccessor implements TypeAliasAccessor<Map<String,
 	}
 
 	@Override
-	public Object readAliasFrom(Map<String, Object> source) {
+	public Alias readAliasFrom(Map<String, Object> source) {
 		if (typeKey == null) {
 			return null;
 		}
-		return source.get(typeKey);
+		return Alias.ofNullable(source.get(typeKey));
 	}
 
 	@Override
